@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>a46ec4de-9281-4024-8ebd-5a9fb380a12e</ProjectGuid>
+    <ProjectGuid>{A46EC4DE-9281-4024-8EBD-5A9FB380A12E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RT_Shelves</RootNamespace>
@@ -30,20 +30,56 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="0Harmony">
+      <HintPath>..\Reference\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Reference\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\Reference\UnityEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\CompUpgradeApplier.cs" />
+    <Compile Include="Source\DefGen.cs" />
+    <Compile Include="Source\Patches_DefGenerator.cs" />
+    <Compile Include="Source\Patches_GenDrop.cs" />
+    <Compile Include="Source\Patches_HaulAIUtility.cs" />
+    <Compile Include="Source\CompExtraSlots.cs" />
+    <Compile Include="Source\Mod.cs" />
+    <Compile Include="Source\Patches_GenSpawn.cs" />
+    <Compile Include="Source\Patches_StoreUtility.cs" />
+    <Compile Include="Source\Utility.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="About\About.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Assemblies\0Harmony.dll" />
+    <Content Include="Assemblies\RT_Shelves.dll" />
+    <Content Include="Languages\English\Keyed\RT_Shelves_Keyed_EN.xml" />
+    <Content Include="Languages\Russian\Keyed\RT_Shelves_Keyed_RU.xml" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
- </Project>
+  <PropertyGroup>
+    <PostBuildEvent>set DevFolder=D:\RimWorldDEV
+set DevModFolder=%25DevFolder%25\Mods
+
+xcopy /Y /C /S "$(ProjectDir)$(OutDir)$(TargetFileName)" "$(ProjectDir)\Assemblies"
+
+rd /Q /S "%25DevModFolder%25\$(ProjectName)\"
+md "%25DevModFolder%25\$(ProjectName)"
+xcopy /Y /C /S "$(ProjectDir)." "%25DevModFolder%25\$(ProjectName)"
+
+REM for %25%25i in ("%25DevFolder%25\*.exe") do start "" /b "%25%25i"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

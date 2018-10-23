@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<CompExtraSlots_Gizmo_Label>stacks</CompExtraSlots_Gizmo_Label>
+	<CompExtraSlots_Gizmo_Description>Select the number of items to be stored on each cell of this structure.</CompExtraSlots_Gizmo_Description>
+</LanguageData>

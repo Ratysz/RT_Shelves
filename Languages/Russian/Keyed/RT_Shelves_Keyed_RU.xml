@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<CompExtraSlots_Gizmo_Label>предметы</CompExtraSlots_Gizmo_Label>
+	<CompExtraSlots_Gizmo_Description>Выбрать количество предметов, хранимых на каждой клетке этой постройки.</CompExtraSlots_Gizmo_Description>
+</LanguageData>
