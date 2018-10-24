@@ -42,7 +42,7 @@ namespace RT_Shelves
 			}
 			Utility.Debug(builder.ToString());
 			Complete = true;
-			LoadedModManager.GetMod<Mod>().GetSettings<Mod.ModSettings>().ExposeData();
+			LoadedModManager.GetMod<Mod>().GetSettings<Mod.ModSettings>();
 			return true;
 		}
 	}

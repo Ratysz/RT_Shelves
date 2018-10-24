@@ -110,10 +110,13 @@ namespace RT_Shelves
 
 		static bool ShouldHaulAway(Thing thing)
 		{
-			int? extraSlots = thing.Position.GetFirstThingWithComp<CompExtraSlots>(thing.Map)?.GetComp<CompExtraSlots>().currentExtraSlots;
-			if (extraSlots != null && 1 + extraSlots < thing.Position.GetThingList(thing.Map).FindAll(x => x.def.EverStorable(false)).Count)
+			if (thing.Map != null)
 			{
-				return true;
+				int? extraSlots = thing.Position.GetFirstThingWithComp<CompExtraSlots>(thing.Map)?.GetComp<CompExtraSlots>().currentExtraSlots;
+				if (extraSlots != null && 1 + extraSlots < thing.Position.GetThingList(thing.Map).FindAll(x => x.def.EverStorable(false)).Count)
+				{
+					return true;
+				}
 			}
 			return false;
 		}

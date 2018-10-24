@@ -19,14 +19,26 @@ namespace RT_Shelves
 			harmony.PatchAll(Assembly.GetExecutingAssembly());
 		}
 
+		public override string SettingsCategory()
+		{
+			return "RT Shelves";
+		}
+
+		private ModSettings _settings;
+		public ModSettings Settings
+		{
+			get => _settings ?? (_settings = GetSettings<ModSettings>());
+			set => _settings = value;
+		}
+
 		public class ModSettings : Verse.ModSettings
 		{
 			public override void ExposeData()
 			{
-				if (Patch_GenerateImpliedDefs_PreResolve.Complete)
+				if (Patch_GenerateImpliedDefs_PreResolve.Complete || Scribe.mode == LoadSaveMode.Saving)
 				{
 					StringBuilder builder = new StringBuilder();
-					builder.AppendLine("Loading settings:");
+					builder.AppendLine("Settings:");
 					var defList = DefDatabase<ThingDef>.AllDefs.ToList().FindAll(x => x.comps?.Find(t => t is CompProperties_ExtraSlots) != null);
 					foreach (var def in defList)
 					{
@@ -38,18 +50,6 @@ namespace RT_Shelves
 				}
 				base.ExposeData();
 			}
-		}
-
-		private ModSettings _settings;
-		public ModSettings Settings
-		{
-			get => _settings ?? (_settings = GetSettings<ModSettings>());
-			set => _settings = value;
-		}
-
-		public override string SettingsCategory()
-		{
-			return "RT Shelves";
 		}
 
 		private void Separator(float y, Rect rect)
@@ -97,7 +97,7 @@ namespace RT_Shelves
 			List<ThingDef> list = DefDatabase<ThingDef>.AllDefs.ToList().FindAll(x => x.comps?.Find(t => t is CompProperties_ExtraSlots) != null);
 			if (!list.NullOrEmpty())
 			{
-				Rect listRect = inRect.LeftPart(0.5f);
+				Rect listRect = inRect.LeftPart(0.35f);
 				Rect listViewRect = new Rect(0f, 0f, listRect.width - GenUI.ScrollBarWidth, list.Count * rowHeight);
 				float vPos = 0f;
 				bool first = true;
