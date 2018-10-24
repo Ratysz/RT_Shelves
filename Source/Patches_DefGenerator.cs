@@ -45,5 +45,13 @@ namespace RT_Shelves
 			LoadedModManager.GetMod<Mod>().GetSettings<Mod.ModSettings>();
 			return true;
 		}
+
+		static void Postfix()
+		{
+			foreach (var def in DefDatabase<ThingDef>.AllDefs.ToList().FindAll(x => x.GetCompProperties<CompProperties_UpgradeApplier>() != null))
+			{
+				def.designationCategory = null;
+			}
+		}
 	}
 }

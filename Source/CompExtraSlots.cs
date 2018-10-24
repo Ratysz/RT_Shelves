@@ -51,8 +51,6 @@ namespace RT_Shelves
 		{
 			upgradeDef = DefDatabase<ThingDef>.GetNamed(parent.def.defName + "_upgrade");
 			downgradeDef = DefDatabase<ThingDef>.GetNamed(parent.def.defName + "_downgrade");
-			downgradeDef.costList = null;
-			downgradeDef.costStuffCount = 0;
 			if (!initialized)
 			{
 				currentExtraSlots = 0;
@@ -140,7 +138,7 @@ namespace RT_Shelves
 								for (int j = 0; j < Math.Abs(currentExtraSlots - extraSlotsNumber); j++)
 								{
 									GenConstruct.PlaceBlueprintForBuild((downgrade ? downgradeDef : upgradeDef),
-										parent.Position, parent.Map, parent.Rotation, parent.Faction, parent.Stuff);
+										parent.Position, parent.Map, parent.Rotation, parent.Faction, (downgrade ? null : parent.Stuff));
 								}
 							}));
 						}
