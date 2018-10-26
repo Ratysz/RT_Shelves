@@ -53,6 +53,58 @@ namespace RT_Shelves
 		}
 	}
 
+	[HarmonyPatch(typeof(StoreUtility), "NoStorageBlockersIn")]
+	internal class Patch_NoStorageBlockersIn_RSACompat
+	{
+		static MethodInfo RSASSMGetter;
+		static FieldInfo RSASSMFPField;
+
+		static bool Prepare(HarmonyInstance instance)
+		{
+			var rsaAsm = AppDomain.CurrentDomain.GetAssemblies().ToList().Find(x => x.FullName.Split(',').First() == "RSA");
+			if (rsaAsm != null)
+			{
+				Utility.Debug("Rimworld Search Agency detected, applying compatibility repatch.");
+
+				var method = AccessTools.Method(typeof(StoreUtility), "NoStorageBlockersIn");
+				var oldPatch = AccessTools.Method(rsaAsm.GetType("RSA.StoreUtility_NoStorageBlockersIn"), "FilledEnough");
+				RSASSMGetter = AccessTools.Method(rsaAsm.GetType("RSA.HaulingHysterisis.StorageSettings_Mapping"), "Get");
+				RSASSMFPField = AccessTools.Field(rsaAsm.GetType("RSA.HaulingHysterisis.StorageSettings_Hysteresis"), "FillPercent");
+
+				LongEventHandler.ExecuteWhenFinished(delegate
+				{
+					Utility.Debug("Removing RSA postfix to StoreUtility.NoStorageBlockersIn().");
+					instance.Unpatch(method, oldPatch);
+				});
+				return true;
+			}
+			return false;
+		}
+
+		static float GetHysteresisFillPercent(StorageSettings settings)
+		{
+			return (float)RSASSMFPField.GetValue(RSASSMGetter.Invoke(null, new object[] { settings }));
+		}
+
+		static void Postfix(ref bool __result, IntVec3 c, Map map, Thing thing)
+		{
+			if (__result)
+			{
+				int? extraSlots = c.GetFirstThingWithComp<CompExtraSlots>(map)?.GetComp<CompExtraSlots>().currentExtraSlots;
+				if (extraSlots == 0)
+				{
+					float pct = 100f;
+					var settings = c.GetSlotGroup(map)?.Settings;
+					if (settings != null)
+					{
+						pct = GetHysteresisFillPercent(settings);
+					}
+					__result &= !map.thingGrid.ThingsListAt(c).Any(t => t.def.EverStorable(false) && t.stackCount >= thing.def.stackLimit * (pct / 100f));
+				}
+			}
+		}
+	}
+
 	[HarmonyPatch(typeof(StoreUtility), nameof(StoreUtility.IsInValidBestStorage))]
 	class Patch_IsInValidBestStorage
 	{
