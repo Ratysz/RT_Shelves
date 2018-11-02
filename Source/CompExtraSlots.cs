@@ -135,10 +135,17 @@ namespace RT_Shelves
 							{
 								DestroyUpgradeBlueprintsAndFrames(parent.Map);
 								bool downgrade = currentExtraSlots > extraSlotsNumber;
-								for (int j = 0; j < Math.Abs(currentExtraSlots - extraSlotsNumber); j++)
+								if (DebugSettings.godMode)
 								{
-									GenConstruct.PlaceBlueprintForBuild((downgrade ? downgradeDef : upgradeDef),
-										parent.Position, parent.Map, parent.Rotation, parent.Faction, (downgrade ? null : parent.Stuff));
+									currentExtraSlots = extraSlotsNumber;
+								}
+								else
+								{
+									for (int j = 0; j < Math.Abs(currentExtraSlots - extraSlotsNumber); j++)
+									{
+										GenConstruct.PlaceBlueprintForBuild((downgrade ? downgradeDef : upgradeDef),
+											parent.Position, parent.Map, parent.Rotation, parent.Faction, (downgrade ? null : parent.Stuff));
+									}
 								}
 							}));
 						}

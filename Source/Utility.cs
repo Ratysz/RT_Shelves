@@ -22,37 +22,13 @@ namespace RT_Shelves
 #endif
 		}
 
-		/*public class CodeInstr : CodeInstruction
+		public static CodeInstruction Inspect(this CodeInstruction instr, int? state = null)
 		{
-			public CodeInstr(OpCode opcode, object operand = null) : base(opcode, operand)
-			{
-				Print(this);
-			}
-
-			public CodeInstr(CodeInstr instruction) : base(instruction)
-			{
-				Print(this);
-			}
-		}
-
-		public static CodeInstruction Inspect(CodeInstr instr)
-		{
-			Print((CodeInstruction)instr);
+			Print(instr, state);
 			return instr;
 		}
 
-		public static CodeInstruction Inspect(CodeInstruction instr)
-		{
-			Print(instr);
-			return instr;
-		}
-
-		public static void Print(CodeInstr instr)
-		{
-			Print((CodeInstruction)instr);
-		}
-
-		public static void Print(Harmony.CodeInstruction instr)
+		public static void Print(CodeInstruction instr, int? state = null)
 		{
 			if (instr.labels.Count > 0)
 			{
@@ -67,10 +43,10 @@ namespace RT_Shelves
 				}
 				Debug(builder.ToString());
 			}
-			Debug($"INSTR : {instr.opcode,-10}\t : "
+			Debug($"INSTR : {(state != null ? ($"{state,-2}  ") : (""))}{instr.opcode,-10}\t : "
 				+ ((instr.operand != null && instr.operand.GetType() == typeof(Label))
 					? $": : > {instr.operand.GetHashCode(),-100}" : $"{instr.operand,-100}"));
-		}*/
+		}
 	}
 
 	/*[HarmonyPatch(typeof(MouseoverReadout), nameof(MouseoverReadout.MouseoverReadoutOnGUI))]

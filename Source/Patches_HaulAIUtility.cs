@@ -17,35 +17,42 @@ namespace RT_Shelves
 	{
 		static void Postfix(ref Job __result, Pawn p, Thing t, IntVec3 storeCell)
 		{
-			int? extraSlots = storeCell.GetFirstThingWithComp<CompExtraSlots>(p.Map)?.GetComp<CompExtraSlots>().currentExtraSlots;
-			int storedThings = 0;
-			foreach (Thing thing in storeCell.GetThingList(p.Map))
+			if (t.Position == storeCell) // TODO verify.
 			{
-				if (thing.def.EverStorable(false))
+				return;
+			}
+			int? extraSlots = storeCell.GetFirstThingWithComp<CompExtraSlots>(p.Map)?.GetComp<CompExtraSlots>().currentExtraSlots;
+			if (extraSlots != null)
+			{
+				int storedThings = 0;
+				foreach (Thing thing in storeCell.GetThingList(p.Map))
 				{
-					if (thing.CanStackWith(t))
+					if (thing.def.EverStorable(false))
 					{
-						if (thing.stackCount >= thing.def.stackLimit)
+						if (thing.CanStackWith(t))
 						{
-							storedThings++;
+							if (thing.stackCount >= thing.def.stackLimit)
+							{
+								storedThings++;
+							}
+							else
+							{
+								__result.count = t.def.stackLimit - thing.stackCount;
+								return;
+							}
 						}
 						else
 						{
-							__result.count = t.def.stackLimit - thing.stackCount;
-							return;
+							storedThings++;
 						}
 					}
-					else
+					if (storedThings > extraSlots)
 					{
-						storedThings++;
+						return;
 					}
 				}
-				if (storedThings > extraSlots)
-				{
-					return;
-				}
+				__result.count = t.def.stackLimit;
 			}
-			__result.count = t.def.stackLimit;
 		}
 	}
 }
